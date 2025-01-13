@@ -113,6 +113,9 @@ export const SidebarItems = memo(function SidebarItems({
     if (item.type === SidebarItemType.VAULT) {
       router.push(`/vault/${item.id}`);
     }
+    if (item.type === SidebarItemType.TRASH) {
+      router.push(`/trash`);
+    }
   };
 
   return (
@@ -120,7 +123,7 @@ export const SidebarItems = memo(function SidebarItems({
       {items.map((item) => (
         <div
           key={item.id}
-          className="flex items-center justify-between py-2 px-3 hover:bg-gray-50 rounded-lg group transition-colors cursor-pointer"
+          className="flex items-center justify-between py-2 px-3 dark:hover:bg-gray-50/10 hover:bg-gray-50 rounded-lg group transition-colors cursor-pointer"
           onClick={() => handleItemClick(item)}
         >
           <div className="flex items-center gap-3">
@@ -128,7 +131,7 @@ export const SidebarItems = memo(function SidebarItems({
               <span className={clsx(!isExpanded && 'mx-auto')}>
                 {(() => {
                   const Icon = getIconById(item.icon);
-                  return Icon ? <Icon size={16} style={{ color: item.color || '#000000' }} /> : null;
+                  return Icon ? <Icon size={16} style={{ color: item.color || '#fff' }} /> : null;
                 })()}
               </span>
             )}

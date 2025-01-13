@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Home } from 'lucide-react';
 import Link from 'next/link';
+import { ThemeSwitch } from '@/components/theme/ThemeSwitch';
 
 export function Navbar() {
   return (
@@ -22,7 +23,8 @@ export function Navbar() {
             <span>Home</span>
           </motion.button>
         </Link>
-        <div className="flex items-center gap-4 px-4">
+        <div className="flex items-center gap-4">
+          <ThemeSwitch />
         </div>
       </div>
     </motion.div>

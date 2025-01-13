@@ -43,7 +43,11 @@ export default function Sidebar() {
   ];
 
   const filteredItems = items.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase()),
+    item.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const filteredVaults = vaults.filter((vault) =>
+    vault.name.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -51,7 +55,7 @@ export default function Sidebar() {
       <motion.div
         className={`${
           isExpanded ? 'w-72' : 'w-20'
-        } min-h-screen shadow-xl pt-8 border-r border-gray-200 flex flex-col relative `}
+        } min-h-screen shadow-xl border-r border-gray-200 flex flex-col relative `}
         animate={{ width: isExpanded ? 288 : 80 }}
         transition={{ duration: 0.2 }}
       >
@@ -76,7 +80,7 @@ export default function Sidebar() {
           />
           <VaultsList
             isExpanded={isExpanded}
-            vaults={vaults}
+            vaults={filteredVaults}
             onVaultsChange={refreshVaults}
           />
           <SidebarItems

@@ -37,15 +37,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ru">
+    <html lang="ru" suppressHydrationWarning>
       <body className={inter.className}>
         <Providers>
-        <main className="flex min-h-screen">
+          <main className="flex min-h-screen">
             <Sidebar />
             <div className="flex-1">
-              <div className="mt-16"> 
-                {children}
-              </div>
+              <div className="mt-16">{children}</div>
             </div>
           </main>
         </Providers>

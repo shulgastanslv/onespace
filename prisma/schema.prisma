@@ -14,6 +14,7 @@ model Vault {
   count       Int
   color       String
   notes       Note[]
+  links       Link[]
   isInTrash   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -28,4 +29,18 @@ model Note {
   isInTrash   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Link {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  url         String
+  tags        String[]
+  category    String?
+  vaultId     String
+  vault       Vault    @relation(fields: [vaultId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isInTrash   Boolean  @default(false)
 } 
