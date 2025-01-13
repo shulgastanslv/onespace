@@ -1,14 +1,34 @@
-import { Providers } from "./providers";
-import Sidebar from "@/components/Sidebar";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { Metadata } from "next";
+import { Providers } from './providers';
+import { JetBrains_Mono } from 'next/font/google';
+import './globals.css';
+import { Metadata } from 'next';
+import Sidebar from '@/components/sidebar/Sidebar';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = JetBrains_Mono({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "Onespace",
-  description: "Onespace",
+  title: 'OneSpace',
+  description:
+    "OneSpace is a personal secure space for storing confidential information and organizing the user's digital life.",
+  icons: {
+    icon: '/favicon.ico',
+  },
+  creator: 'Stanislav Shulga',
+  publisher: 'Stanislav Shulga',
+  category: 'Security',
+  keywords: ['OneSpace', 'Secure', 'Personal', 'Digital', 'Life'],
+  openGraph: {
+    title: 'OneSpace',
+    description:
+      "OneSpace is a personal secure space for storing confidential information and organizing the user's digital life.",
+    url: 'https://onespace.com',
+    siteName: 'OneSpace',
+    images: [
+      {
+        url: '/favicon.ico',
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -20,10 +40,14 @@ export default function RootLayout({
     <html lang="ru">
       <body className={inter.className}>
         <Providers>
-          <div className="flex">
+        <main className="flex min-h-screen">
             <Sidebar />
-            <main className="flex-1 p-6 mt-16">{children}</main>
-          </div>
+            <div className="flex-1">
+              <div className="mt-16"> 
+                {children}
+              </div>
+            </div>
+          </main>
         </Providers>
       </body>
     </html>

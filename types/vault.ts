@@ -6,10 +6,5 @@ export interface Vault {
   icon: string | null;
   createdAt: Date;
   updatedAt: Date;
-}
-
-export interface CreateVaultDTO {
-  name: string;
-  color: string;
-  icon: string | null;
+  isInTrash?: boolean;
 }
