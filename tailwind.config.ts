@@ -15,7 +15,14 @@ export default {
         light: {
         },
         dark: {
-        }
+          colors: {
+            primary: {
+              DEFAULT: "#BEF264",
+              foreground: "#000000",
+            },
+            focus: "#BEF264",
+          },
+        },
       }
     })
   ]

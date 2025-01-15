@@ -85,7 +85,7 @@ export function CreateLinkModal({ isOpen, onClose, onSuccess, vaultId }: CreateL
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} backdrop="blur" size="2xl">
+    <Modal isOpen={isOpen} onClose={onClose} backdrop="blur" size="2xl" className="bg-background border border-default-200">
       <ModalContent>
         <form onSubmit={handleSubmit}>
           <ModalHeader className="flex flex-col gap-1">
@@ -102,6 +102,12 @@ export function CreateLinkModal({ isOpen, onClose, onSuccess, vaultId }: CreateL
               }
               errorMessage={errors.title}
               isInvalid={!!errors.title}
+              variant="bordered"
+              radius="lg"
+              classNames={{
+                input: "text-sm",
+                inputWrapper: "bg-background/50",
+              }}
             />
 
             <Input
@@ -113,6 +119,12 @@ export function CreateLinkModal({ isOpen, onClose, onSuccess, vaultId }: CreateL
               }
               errorMessage={errors.url}
               isInvalid={!!errors.url}
+              variant="bordered"
+              radius="lg"
+              classNames={{
+                input: "text-sm",
+                inputWrapper: "bg-background/50",
+              }}
             />
 
             <Textarea
@@ -124,6 +136,12 @@ export function CreateLinkModal({ isOpen, onClose, onSuccess, vaultId }: CreateL
               }
               errorMessage={errors.description}
               isInvalid={!!errors.description}
+              variant="bordered"
+              radius="lg"
+              classNames={{
+                input: "text-sm",
+                inputWrapper: "bg-background/50",
+              }}
             />
 
             <Select
@@ -133,6 +151,8 @@ export function CreateLinkModal({ isOpen, onClose, onSuccess, vaultId }: CreateL
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, category: e.target.value }))
               }
+              variant="bordered"
+              radius="lg"
             >
               {Object.entries(LinkCategory).map(([key, value]) => (
                 <SelectItem key={value} value={value}>
@@ -152,6 +172,8 @@ export function CreateLinkModal({ isOpen, onClose, onSuccess, vaultId }: CreateL
                   tags: Array.from(new Set(e.target.value.split(',')))
                 }))
               }
+              variant="bordered"
+              radius="lg"
             >
               {Object.entries(LinkTags).map(([key, value]) => (
                 <SelectItem key={value} value={value}>

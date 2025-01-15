@@ -97,6 +97,7 @@ export function CreateNoteModal({ isOpen, onClose, onSuccess, vaultId }: CreateN
       onClose={onClose} 
       backdrop="blur" 
       placement="center"
+      className="bg-background border border-default-200"
       size="3xl"
     >
       <ModalContent>
@@ -115,6 +116,12 @@ export function CreateNoteModal({ isOpen, onClose, onSuccess, vaultId }: CreateN
               }
               errorMessage={errors.title}
               isInvalid={!!errors.title}
+              variant="bordered"
+              radius="lg"
+              classNames={{
+                input: "text-sm",
+                inputWrapper: "bg-background/50",
+              }}
             />
 
             <div className="flex gap-2 mb-2">
@@ -129,6 +136,10 @@ export function CreateNoteModal({ isOpen, onClose, onSuccess, vaultId }: CreateN
 
             <Tabs 
               selectedKey={activeTab} 
+              variant="bordered"
+              classNames={{
+                tabList: "bg-background/50",
+              }}
               onSelectionChange={(key) => setActiveTab(key.toString())}
             >
               <Tab 
@@ -149,6 +160,12 @@ export function CreateNoteModal({ isOpen, onClose, onSuccess, vaultId }: CreateN
                   }
                   errorMessage={errors.content}
                   isInvalid={!!errors.content}
+                  variant="bordered"
+                  radius="lg"
+                  classNames={{
+                    input: "text-sm",
+                    inputWrapper: "bg-background/50",
+                  }}
                 />
               </Tab>
               <Tab 

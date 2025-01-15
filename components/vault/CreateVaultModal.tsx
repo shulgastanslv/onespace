@@ -68,7 +68,7 @@ export function CreateVaultModal({ isOpen, onClose, onSuccess }: CreateVaultModa
       backdrop="blur" 
       placement="center"
     >
-      <ModalContent>
+      <ModalContent className="bg-background border border-default-200">
         <form onSubmit={handleSubmit}>
           <ModalHeader className="flex flex-col gap-1">
             <h2 className="text-xl font-bold">Create new vault</h2>

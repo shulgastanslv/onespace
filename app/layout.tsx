@@ -6,22 +6,22 @@ import { Metadata } from 'next';
 const inter = JetBrains_Mono({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'OneSpace',
+  title: 'onespace',
   description:
-    "OneSpace is a personal secure space for storing confidential information and organizing the user's digital life.",
+    "onespace is a personal secure space for storing confidential information and organizing the user's digital life.",
   icons: {
     icon: '/favicon.ico',
   },
   creator: 'Stanislav Shulga',
   publisher: 'Stanislav Shulga',
   category: 'Security',
-  keywords: ['OneSpace', 'Secure', 'Personal', 'Digital', 'Life'],
+  keywords: ['onespace', 'secure', 'personal', 'digital', 'life'],
   openGraph: {
-    title: 'OneSpace',
+    title: 'onespace',
     description:
-      "OneSpace is a personal secure space for storing confidential information and organizing the user's digital life.",
+      "onespace is a personal secure space for storing confidential information and organizing the user's digital life.",
     url: 'https://onespace.com',
-    siteName: 'OneSpace',
+    siteName: 'onespace',
     images: [
       {
         url: '/favicon.ico',

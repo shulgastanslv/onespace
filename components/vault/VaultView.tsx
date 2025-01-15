@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Button } from '@nextui-org/react';
-import { PlusIcon } from 'lucide-react';
+import { LinkIcon, StickyNote } from 'lucide-react';
 import { Note } from '@/types/note';
 import { Vault } from '@/types/vault';
 import { getAllNotes } from '@/services/note';
@@ -74,7 +74,7 @@ export function VaultView({ vaultId }: VaultViewProps) {
         />
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-3">
-            <h1 className="text-base font-bold">{vault.name}</h1>
+            <h1 className="text-xl font-bold">{vault.name}</h1>
             {(() => {
               const Icon = getIconById(vault.icon!);
               return Icon ? (
@@ -83,9 +83,9 @@ export function VaultView({ vaultId }: VaultViewProps) {
             })()}
           </div>
         </div>
-        <div className="flex flex-row gap-8">
+        <div className="flex flex-col gap-8">
           <div className="flex-1">
-            <h2 className="text-lg font-semibold mb-4">All Items</h2>
+            <h2 className="text-base font-semibold mb-4">All Items</h2>
             <div className="mb-8">
               {notes.length === 0 ? (
                 <p className="text-gray-500">
@@ -105,26 +105,29 @@ export function VaultView({ vaultId }: VaultViewProps) {
               )}
             </div>
           </div>
-
-          <div className="flex flex-col gap-3 w-40">
-            <Button
-              color="primary"
-              size="sm"
-              onClick={() => setIsCreateModalOpen(true)}
-              startContent={<PlusIcon size={16} />}
-            >
-              Create note
-            </Button>
-            <Button
-              color="primary"
-              size="sm"
-              onClick={() => setIsCreateLinkModalOpen(true)}
-              startContent={<PlusIcon size={16} />}
-            >
-              Add link
-            </Button>
-          </div>
         </div>
+      </div>
+      <div className="flex flex-col items-center justify-center gap-3">
+        <Button
+          color="default"
+          variant="light"
+          size="sm"
+          className="w-32"
+          onClick={() => setIsCreateModalOpen(true)}
+          startContent={<StickyNote size={16} />}
+        >
+          Create note
+        </Button>
+        <Button
+          color="default"
+          size="sm"
+          variant="light"         
+          className="w-32"
+          onClick={() => setIsCreateLinkModalOpen(true)}
+          startContent={<LinkIcon size={16} />}
+        >
+          Add link
+        </Button>
       </div>
     </div>
   );

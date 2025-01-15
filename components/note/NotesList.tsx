@@ -55,7 +55,7 @@ export function NotesList({ notes }: NotesListProps) {
         {notes.map((note) => (
           <Card
             key={note.id}
-            className="hover:shadow-md transition-shadow duration-200 max-w-sm"
+            className="hover:shadow-md  bg-background border rounded-lg shadow-lg transition-shadow duration-200 max-w-sm"
           >
             <CardHeader className="flex justify-between items-start px-4 pt-3 pb-2">
               <div>
