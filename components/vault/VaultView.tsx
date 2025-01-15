@@ -8,7 +8,6 @@ import { Vault } from '@/types/vault';
 import { getAllNotes } from '@/services/note';
 import { CreateNoteModal } from '../note/CreateNoteModal';
 import { NotesList } from '@/components/note/NotesList';
-import { Navbar } from '@/components/navbar/Navbar';
 import { getIconById } from '@/lib/constants/icons';
 import { Link } from '@/types/link';
 import { getAllLinks } from '@/services/link';
@@ -60,7 +59,6 @@ export function VaultView({ vaultId }: VaultViewProps) {
 
   return (
     <div>
-      <Navbar />
       <div className="p-6 mt-16">
         <CreateNoteModal
           isOpen={isCreateModalOpen}

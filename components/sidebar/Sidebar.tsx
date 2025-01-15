@@ -5,7 +5,6 @@ import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@nextui-org/react';
 import { SidebarItem, SidebarItemType } from '@/types/sidebar';
-import { SearchBar } from '@/components/sidebar/SearchBar';
 import { SidebarItems } from './SidebarItems';
 import { VaultsList } from './VaultsList';
 import { Vault } from '@/types/vault';
@@ -14,7 +13,6 @@ import { useRouter } from 'next/navigation';
 
 export default function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(true);
-  const [search, setSearch] = useState('');
   const router = useRouter();
   const [vaults, setVaults] = useState<Vault[]>([]);
 
@@ -29,9 +27,6 @@ export default function Sidebar() {
 
   const trashCount = vaults.filter((v) => v.isInTrash).length;
 
-  const handleSearch = (search: string) => {
-    setSearch(search);
-  };
 
   const items: SidebarItem[] = [
     {
@@ -43,20 +38,13 @@ export default function Sidebar() {
     },
   ];
 
-  const filteredItems = items.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase()),
-  );
-
-  const filteredVaults = vaults.filter((vault) =>
-    vault.name.toLowerCase().includes(search.toLowerCase()),
-  );
-
+ 
   return (
     <>
       <motion.div
         className={`${
           isExpanded ? 'w-72' : 'w-20'
-        } min-h-screen shadow-xl border-r border-gray-200 flex flex-col relative `}
+        } min-h-screen shadow-xl border-r mt-14 border-gray-200 flex flex-col relative `}
         animate={{ width: isExpanded ? 288 : 80 }}
         transition={{ duration: 0.2 }}
       >
@@ -74,24 +62,25 @@ export default function Sidebar() {
           )}
         </Button>
         <div className="flex flex-col p-5">
-          <SearchBar
-            isExpanded={isExpanded}
-            search={search}
-            onSearch={handleSearch}
-          />
           <VaultsList
             isExpanded={isExpanded}
-            vaults={filteredVaults}
+            vaults={vaults}
             onVaultsChange={refreshVaults}
           />
           <SidebarItems
             isExpanded={isExpanded}
-            items={filteredItems}
+            items={items}
             onVaultsChange={refreshVaults}
           />
-          <Button size="sm" variant="light" className="p-5" onClick={() => {router.push('/auth/login')}}>
-            Logout
-          </Button>
+          <div className="flex justify-center">
+            {
+              isExpanded ? (
+                <Button size="sm" variant="light" className="p-5" onClick={() => {router.push('/auth/login')}}>
+                  Logout
+                </Button>
+              ) : null
+            }
+          </div>
         </div>
       </motion.div>
     </>

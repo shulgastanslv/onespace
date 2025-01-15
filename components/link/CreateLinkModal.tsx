@@ -10,10 +10,32 @@ import {
   ModalHeader,
   ModalFooter,
   ModalContent,
+  Select,
+  SelectItem,
 } from '@nextui-org/react';
 import { CreateLinkDTO, createLinkSchema } from '@/schemas/link';
 import { createLink } from '@/services/link';
 import { toast } from 'sonner';
+
+enum LinkCategory {
+  ARTICLE = 'ARTICLE',
+  VIDEO = 'VIDEO',
+  TOOL = 'TOOL',
+  DOCUMENTATION = 'DOCUMENTATION',
+  TUTORIAL = 'TUTORIAL',
+  OTHER = 'OTHER',
+}
+
+enum LinkTags {
+  DESIGN = 'design',
+  PRODUCTIVITY = 'productivity',
+  AI = 'ai',
+  MARKETING = 'marketing',
+  SEO = 'seo',
+  CODING = 'coding',
+  LEARNING = 'learning',
+  OTHER = 'other',
+}
 
 interface CreateLinkModalProps {
   isOpen: boolean;
@@ -104,26 +126,39 @@ export function CreateLinkModal({ isOpen, onClose, onSuccess, vaultId }: CreateL
               isInvalid={!!errors.description}
             />
 
-            <Input
+            <Select
               label="Category"
-              placeholder="Enter category..."
-              value={formData.category}
+              placeholder="Select category"
+              selectedKeys={formData.category ? [formData.category] : []}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, category: e.target.value }))
               }
-            />
+            >
+              {Object.entries(LinkCategory).map(([key, value]) => (
+                <SelectItem key={value} value={value}>
+                  {key.charAt(0) + key.slice(1).toLowerCase()}
+                </SelectItem>
+              ))}
+            </Select>
 
-            <Input
+            <Select
               label="Tags"
-              placeholder="Enter tags separated by commas..."
-              value={formData.tags?.join(', ')}
+              placeholder="Select tags"
+              selectionMode="multiple"
+              selectedKeys={new Set(formData.tags)}
               onChange={(e) =>
-                setFormData((prev) => ({ 
-                  ...prev, 
-                  tags: e.target.value.split(',').map(tag => tag.trim()).filter(Boolean)
+                setFormData((prev) => ({
+                  ...prev,
+                  tags: Array.from(new Set(e.target.value.split(',')))
                 }))
               }
-            />
+            >
+              {Object.entries(LinkTags).map(([key, value]) => (
+                <SelectItem key={value} value={value}>
+                  {key.charAt(0) + key.slice(1).toLowerCase()}
+                </SelectItem>
+              ))}
+            </Select>
           </ModalBody>
 
           <ModalFooter>
