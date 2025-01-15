@@ -14,6 +14,7 @@ import { Link } from '@/types/link';
 import { getAllLinks } from '@/services/link';
 import { CreateLinkModal } from '../link/CreateLinkModal';
 import { LinksList } from '../link/LinksList';
+import { getVault } from '@/services/vault';
 
 interface VaultViewProps {
   vaultId: string;
@@ -32,9 +33,8 @@ export function VaultView({ vaultId }: VaultViewProps) {
   };
 
   const fetchVault = async () => {
-    const response = await fetch(`/api/vaults/${vaultId}`);
-    const vault = await response.json();
-    setVault(vault);
+    const vault = await getVault(vaultId);
+    setVault(vault as Vault);
   };
 
   const fetchLinks = async () => {
@@ -85,71 +85,46 @@ export function VaultView({ vaultId }: VaultViewProps) {
             })()}
           </div>
         </div>
-        <div className="flex flex-col gap-8">
-          <div>
-            <h2 className="text-lg font-semibold mb-4">Notes</h2>
-            {notes.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-gray-500 mb-4">
+        <div className="flex flex-row gap-8">
+          <div className="flex-1">
+            <h2 className="text-lg font-semibold mb-4">All Items</h2>
+            <div className="mb-8">
+              {notes.length === 0 ? (
+                <p className="text-gray-500">
                   There are no notes in this vault
                 </p>
-                <Button
-                  color="primary"
-                  variant="flat"
-                  size="sm"
-                  onClick={() => setIsCreateModalOpen(true)}
-                >
-                  Create first note
-                </Button>
-              </div>
-            ) : (
-              <div className="flex flex-col justify-center items-center gap-5">
-                <div className="flex flex-col gap-4">
-                  <NotesList notes={notes} onNotesChange={fetchNotes} />
-                </div>
-                <Button
-                  color="primary"
-                  size="sm"
-                  className="w-max mt-5"
-                  onClick={() => setIsCreateModalOpen(true)}
-                  startContent={<PlusIcon size={16} />}
-                >
-                  Create note
-                </Button>
-              </div>
-            )}
-          </div>
-          <div>
-            <h2 className="text-lg font-semibold mb-4">Links</h2>
-            {links.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-gray-500 mb-4">
+              ) : (
+                <NotesList notes={notes} onNotesChange={fetchNotes} />
+              )}
+            </div>
+            <div>
+              {links.length === 0 ? (
+                <p className="text-gray-500">
                   There are no links in this vault
                 </p>
-                <Button
-                  variant="flat"
-                  size="sm"
-                  onClick={() => setIsCreateLinkModalOpen(true)}
-                >
-                  Add first link
-                </Button>
-              </div>
-            ) : (
-              <div className="flex flex-col justify-center items-center gap-5">
-                <div className="flex flex-col gap-4">
-                  <LinksList links={links} onLinksChange={fetchLinks} />
-                </div>
-                <Button
-                  color="primary"
-                  size="sm"
-                  className="w-max mt-5"
-                  onClick={() => setIsCreateLinkModalOpen(true)}
-                  startContent={<PlusIcon size={16} />}
-                >
-                  Add link
-                </Button>
-              </div>
-            )}
+              ) : (
+                <LinksList links={links} onLinksChange={fetchLinks} />
+              )}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-3 w-40">
+            <Button
+              color="primary"
+              size="sm"
+              onClick={() => setIsCreateModalOpen(true)}
+              startContent={<PlusIcon size={16} />}
+            >
+              Create note
+            </Button>
+            <Button
+              color="primary"
+              size="sm"
+              onClick={() => setIsCreateLinkModalOpen(true)}
+              startContent={<PlusIcon size={16} />}
+            >
+              Add link
+            </Button>
           </div>
         </div>
       </div>

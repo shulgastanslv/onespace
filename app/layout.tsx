@@ -2,7 +2,6 @@ import { Providers } from './providers';
 import { JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { Metadata } from 'next';
-import Sidebar from '@/components/sidebar/Sidebar';
 
 const inter = JetBrains_Mono({ subsets: ['latin'] });
 
@@ -39,14 +38,7 @@ export default function RootLayout({
   return (
     <html lang="ru" suppressHydrationWarning>
       <body className={inter.className}>
-        <Providers>
-          <main className="flex min-h-screen">
-            <Sidebar />
-            <div className="flex-1">
-              <div className="mt-16">{children}</div>
-            </div>
-          </main>
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

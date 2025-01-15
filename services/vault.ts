@@ -50,3 +50,12 @@ export const emptyTrash = async (): Promise<void> => {
   });
 };
 
+export const getVault = async (id: string): Promise<Vault | null> => {
+  if (!id) return null;
+  const vault = await prisma.vault.findUnique({
+    where: { id },
+  });
+  console.log(vault);
+  return vault as Vault;
+};
+

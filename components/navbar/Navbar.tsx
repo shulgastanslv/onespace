@@ -10,7 +10,7 @@ export function Navbar() {
     <motion.div
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      className="w-[calc(100%-288px)] h-14 border-b bg-background/70 shadow-md backdrop-blur-md fixed top-0 right-0 z-50"
+      className="w-full h-14 border-b bg-background/70 shadow-md backdrop-blur-md fixed top-0 right-0 z-50"
     >
       <div className="flex items-center justify-between h-full px-6">
         <Link href="/">

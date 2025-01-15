@@ -10,11 +10,12 @@ import { SidebarItems } from './SidebarItems';
 import { VaultsList } from './VaultsList';
 import { Vault } from '@/types/vault';
 import { getAllVaults } from '@/services/vault';
+import { useRouter } from 'next/navigation';
 
 export default function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(true);
   const [search, setSearch] = useState('');
-
+  const router = useRouter();
   const [vaults, setVaults] = useState<Vault[]>([]);
 
   const refreshVaults = async () => {
@@ -43,11 +44,11 @@ export default function Sidebar() {
   ];
 
   const filteredItems = items.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase())
+    item.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   const filteredVaults = vaults.filter((vault) =>
-    vault.name.toLowerCase().includes(search.toLowerCase())
+    vault.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -88,6 +89,9 @@ export default function Sidebar() {
             items={filteredItems}
             onVaultsChange={refreshVaults}
           />
+          <Button size="sm" variant="light" className="p-5" onClick={() => {router.push('/auth/login')}}>
+            Logout
+          </Button>
         </div>
       </motion.div>
     </>

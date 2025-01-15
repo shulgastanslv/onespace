@@ -19,7 +19,7 @@ export function ThemeSwitch() {
   return (
     <Switch
       defaultSelected={theme === "dark"}
-      size="lg"
+      size="sm"
       color="warning"
       startContent={<SunIcon className="h-4 w-4" />}
       endContent={<MoonIcon className="h-4 w-4" />}

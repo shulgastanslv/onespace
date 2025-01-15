@@ -1,3 +1,3 @@
 export default function TrashPage() {
-  return <div>Trash</div>;
+  return <div className="p-5">Trash</div>;
 }
