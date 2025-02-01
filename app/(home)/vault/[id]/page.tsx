@@ -6,6 +6,6 @@ interface VaultPageProps {
   };
 }
 
-export default function VaultPage({ params }: VaultPageProps) {
+export default async function VaultPage({ params }: VaultPageProps) {
   return <VaultView vaultId={params.id} />;
 } 

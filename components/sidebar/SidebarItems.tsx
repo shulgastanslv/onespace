@@ -116,19 +116,22 @@ export const SidebarItems = memo(function SidebarItems({
     if (item.type === SidebarItemType.TRASH) {
       router.push(`/trash`);
     }
+    if (item.type === SidebarItemType.FEEDBACK) {
+      router.push(`/feedback`);
+    }
   };
 
   return (
-    <div>
+    <div className="flex flex-col gap-1">
       {items.map((item) => (
         <div
           key={item.id}
           className="flex items-center justify-between py-2 px-3 dark:hover:bg-gray-50/10 hover:bg-gray-50 rounded-lg group transition-colors cursor-pointer"
           onClick={() => handleItemClick(item)}
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-1">
             {item.icon && (
-              <span className={clsx(!isExpanded && 'mx-auto')}>
+              <span className={clsx("min-w-[16px]", !isExpanded && 'mx-auto')}>
                 {(() => {
                   const Icon = getIconById(item.icon);
                   return Icon ? <Icon size={16} style={{ color: item.color || '#fff' }} /> : null;
@@ -136,13 +139,15 @@ export const SidebarItems = memo(function SidebarItems({
               </span>
             )}
             {isExpanded && (
-              <>
-                <span className="text-sm font-medium">{item.name}</span>
-                <span className="text-xs text-gray-500">({item.count})</span>
-              </>
+              <div className="flex flex-row items-center justify-between">
+                <span className="text-sm font-medium flex-1">{item.name}</span>
+                {(item.type === SidebarItemType.VAULT || item.type === SidebarItemType.TRASH) && (
+                  <span className="text-xs text-gray-500 ml-5">({item.count})</span>
+                )}
+              </div>
             )}
           </div>
-          {isExpanded && <SidebarItemDropdown type={item.type} onVaultsChange={onVaultsChange} itemId={item.id} />}
+          {(item.type === SidebarItemType.VAULT || item.type === SidebarItemType.TRASH) && <SidebarItemDropdown type={item.type} onVaultsChange={onVaultsChange} itemId={item.id} />}
         </div>
       ))}
     </div>

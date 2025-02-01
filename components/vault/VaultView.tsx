@@ -58,7 +58,7 @@ export function VaultView({ vaultId }: VaultViewProps) {
   if (!vault) return null;
 
   return (
-    <div>
+    <div className="max-w-6xl mx-auto">
       <div className="p-6 mt-16">
         <CreateNoteModal
           isOpen={isCreateModalOpen}
@@ -72,62 +72,91 @@ export function VaultView({ vaultId }: VaultViewProps) {
           onSuccess={handleCreateLinkSuccess}
           vaultId={vaultId}
         />
-        <div className="flex items-center justify-between mb-5">
-          <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold">{vault.name}</h1>
-            {(() => {
-              const Icon = getIconById(vault.icon!);
-              return Icon ? (
-                <Icon size={16} style={{ color: vault.color || '#000000' }} />
-              ) : null;
-            })()}
+        <div className="bg-transparent border-b border-default-200 rounded-sm p-6 mb-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {(() => {
+                const Icon = getIconById(vault.icon!);
+                return Icon ? (
+                  <div className="p-2 bg-inherit rounded-lg">
+                    <Icon
+                      size={24}
+                      style={{ color: vault.color || '#000000' }}
+                    />
+                  </div>
+                ) : null;
+              })()}
+              <div>
+                <h1 className="text-2xl font-bold">{vault.name}</h1>
+                <p className="text-sm text-gray-500 mt-1">
+                  {notes.length} notes · {links.length} links
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <Button
+                color="primary"
+                variant="shadow"
+                size="sm"
+                onClick={() => setIsCreateModalOpen(true)}
+                startContent={<StickyNote size={16} />}
+              >
+                Create note
+              </Button>
+              <Button
+                color="primary"
+                variant="shadow"
+                size="sm"
+                onClick={() => setIsCreateLinkModalOpen(true)}
+                startContent={<LinkIcon size={16} />}
+              >
+                Add link
+              </Button>
+            </div>
           </div>
         </div>
-        <div className="flex flex-col gap-8">
-          <div className="flex-1">
-            <h2 className="text-base font-semibold mb-4">All Items</h2>
-            <div className="mb-8">
-              {notes.length === 0 ? (
-                <p className="text-gray-500">
-                  There are no notes in this vault
-                </p>
-              ) : (
-                <NotesList notes={notes} onNotesChange={fetchNotes} />
-              )}
-            </div>
-            <div>
-              {links.length === 0 ? (
-                <p className="text-gray-500">
-                  There are no links in this vault
-                </p>
-              ) : (
-                <LinksList links={links} onLinksChange={fetchLinks} />
-              )}
-            </div>
+        <div className="grid grid-cols-1 gap-8">
+          <div className="bg-transparent border-b border-default-200 p-6">
+            <h2 className="text-lg font-semibold mb-6">Notes</h2>
+            {notes.length === 0 ? (
+              <div className="text-center py-8">
+                <StickyNote size={24} className="mx-auto mb-2 text-gray-400" />
+                <p className="text-gray-500">No notes yet</p>
+                <Button
+                  color="primary"
+                  variant="light"
+                  size="sm"
+                  className="mt-2"
+                  onClick={() => setIsCreateModalOpen(true)}
+                >
+                  Create your first note
+                </Button>
+              </div>
+            ) : (
+              <NotesList notes={notes} onNotesChange={fetchNotes} />
+            )}
+          </div>
+          <div className="bg-transparent border-b border-default-200 p-6">
+            <h2 className="text-lg font-semibold mb-6">Links</h2>
+            {links.length === 0 ? (
+              <div className="text-center py-8">
+                <LinkIcon size={24} className="mx-auto mb-2 text-gray-400" />
+                <p className="text-gray-500">No links yet</p>
+                <Button
+                  color="primary"
+                  variant="light"
+                  size="sm"
+                  className="mt-2"
+                  onClick={() => setIsCreateLinkModalOpen(true)}
+                >
+                  Add your first link
+                </Button>
+              </div>
+            ) : (
+              <LinksList links={links} onLinksChange={fetchLinks} />
+            )}
           </div>
         </div>
-      </div>
-      <div className="flex flex-col items-center justify-center gap-3">
-        <Button
-          color="default"
-          variant="light"
-          size="sm"
-          className="w-32"
-          onClick={() => setIsCreateModalOpen(true)}
-          startContent={<StickyNote size={16} />}
-        >
-          Create note
-        </Button>
-        <Button
-          color="default"
-          size="sm"
-          variant="light"         
-          className="w-32"
-          onClick={() => setIsCreateLinkModalOpen(true)}
-          startContent={<LinkIcon size={16} />}
-        >
-          Add link
-        </Button>
       </div>
     </div>
   );

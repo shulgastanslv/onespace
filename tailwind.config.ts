@@ -8,6 +8,13 @@ export default {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
+  theme: {
+    extend: {
+      fontFamily: {
+        soyuz: ['"Soyuz Grotesk Bold"', 'sans-serif'],
+      },
+    },
+  },
   darkMode: "class",
   plugins: [
     nextui({

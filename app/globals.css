@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'Soyuz Grotesk Bold';
+  src: url('/fonts/Soyuz Grotesk Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+

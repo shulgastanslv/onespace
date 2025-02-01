@@ -16,7 +16,7 @@ import { CreateVaultDTO, createVaultSchema } from '@/schemas/vault';
 import { createVault } from '@/services/vault';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
-
+import { useTheme } from 'next-themes';
 interface CreateVaultModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -25,10 +25,10 @@ interface CreateVaultModalProps {
 
 export function CreateVaultModal({ isOpen, onClose, onSuccess }: CreateVaultModalProps) {
   const [isLoading, setIsLoading] = useState(false);
-
+  const {theme} = useTheme()
   const [formData, setFormData] = useState<CreateVaultDTO>({
     name: '',
-    color: '#000000',
+    color: theme === 'dark' ? '#ffffff' : '#000000',
     icon: SidebarIcons[0].id,
   });
 
@@ -68,18 +68,21 @@ export function CreateVaultModal({ isOpen, onClose, onSuccess }: CreateVaultModa
       backdrop="blur" 
       placement="center"
     >
-      <ModalContent className="bg-background border border-default-200">
+      <ModalContent className="max-w-2xl bg-background backdrop-blur-sm rounded-lg border border-default-200">
         <form onSubmit={handleSubmit}>
           <ModalHeader className="flex flex-col gap-1">
-            <h2 className="text-xl font-bold">Create new vault</h2>
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Create new vault
+            </h2>
             <p className="text-sm text-default-500">Configure your new secure storage space</p>
           </ModalHeader>
-          
-          <ModalBody className="gap-4">
-            <div className="space-y-1">
+          <ModalBody className="gap-6 py-6">
+            <div className="space-y-2">
               <Input
                 label="Vault Name"
                 placeholder="Enter vault name..."
+                variant="bordered"
+                radius="lg"
                 value={formData.name}
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, name: e.target.value }))
@@ -87,12 +90,21 @@ export function CreateVaultModal({ isOpen, onClose, onSuccess }: CreateVaultModa
                 errorMessage={errors.name}
                 isInvalid={!!errors.name}
                 className="w-full"
+                startContent={
+                  <div className="text-default-400">
+                    {(() => {
+                      const IconComponent = SidebarIcons.find(icon => icon.id === formData.icon)?.icon;
+                      return IconComponent ? <IconComponent className="w-4 h-4" style={{ color: formData.color }} /> : null;
+                    })()}
+                  </div>
+                }
               />
             </div>
-            <div className="flex gap-4 items-start p-4 rounded-lg">
+            <div className="flex gap-6 items-start p-4 rounded-xl bg-transparent border border-default-200 backdrop-blur-sm">
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                className="shadow-lg rounded-lg overflow-hidden"
               >
                 <HexColorPicker
                   color={formData.color}
@@ -102,35 +114,36 @@ export function CreateVaultModal({ isOpen, onClose, onSuccess }: CreateVaultModa
                 />
               </motion.div>
               
-              <div className="flex flex-col gap-2 flex-1">
-                <label className="text-sm font-medium">Color Preview</label>
-                <Input
-                  value={formData.color}
-                  onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, color: e.target.value }))
-                  }
-                  className="w-full"
-                  placeholder="#000000"
-                  startContent={
-                    <div 
-                      className="w-4 h-4 rounded-full" 
-                      style={{ backgroundColor: formData.color }}
-                    />
-                  }
-                />
-                
-                <div className="mt-4">
-                  <label className="text-sm font-medium mb-2 block">Preset Colors</label>
-                  <div className="grid grid-cols-5 gap-5">
+              <div className="flex flex-col gap-4 flex-1">
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Color Preview</label>
+                  <Input
+                    value={formData.color}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, color: e.target.value }))
+                    }
+                    className="w-full"
+                    placeholder="#000000"
+                    startContent={
+                      <div 
+                        className="w-5 h-5 rounded-full ring-2 ring-offset-2 ring-default-200" 
+                        style={{ backgroundColor: formData.color }}
+                      />
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-3 block">Preset Colors</label>
+                  <div className="grid grid-cols-5 gap-3">
                     {[
                       '#FF5733', '#33FF57', '#3357FF', '#FF33F6', '#33FFF6',
                       '#FFB533', '#FF3333', '#33FF33', '#3333FF', '#F633FF'
                     ].map((color) => (
                       <motion.button
                         key={color}
-                        whileHover={{ scale: 1.1 }}
+                        whileHover={{ scale: 1.1, y: -2 }}
                         whileTap={{ scale: 0.95 }}
-                        className="w-8 h-8 rounded-full cursor-pointer border-2 border-transparent hover:border-white transition-all"
+                        className="w-10 h-10 rounded-full cursor-pointer ring-2 ring-offset-2 ring-default-200 hover:ring-primary transition-all duration-200"
                         style={{ backgroundColor: color }}
                         onClick={() => setFormData((prev) => ({ ...prev, color }))}
                         type="button"
@@ -140,25 +153,24 @@ export function CreateVaultModal({ isOpen, onClose, onSuccess }: CreateVaultModa
                 </div>
               </div>
             </div>
-
-            <div className="space-y-2">
+            <div className="space-y-3">
               <label className="text-sm font-medium">Choose Icon</label>
-              <div className="grid grid-cols-6 gap-2 p-2   rounded-lg">
+              <div className="grid grid-cols-6 gap-3 p-4 rounded-xl bg-transparent border border-default-200 backdrop-blur-sm">
                 {SidebarIcons.map((iconData) => {
                   const IconComponent = iconData.icon;
                   return (
                     <motion.div
                       key={iconData.id}
-                      whileHover={{ scale: 1.1 }}
+                      whileHover={{ scale: 1.05, y: -2 }}
                       whileTap={{ scale: 0.95 }}
                     >
                       <Button
                         isIconOnly
-                        variant={formData.icon === iconData.id ? 'solid' : 'light'}
+                        variant={formData.icon === iconData.id ? 'shadow' : 'ghost'}
                         onClick={() =>
                           setFormData((prev) => ({ ...prev, icon: iconData.id }))
                         }
-                        className="aspect-square w-full transition-all duration-200"
+                        className="aspect-square w-full transition-all duration-300"
                         style={{
                           color: formData.icon === iconData.id ? 'white' : formData.color,
                           backgroundColor: formData.icon === iconData.id ? formData.color : 'transparent',

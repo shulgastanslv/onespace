@@ -2,7 +2,7 @@
 
 import { prisma } from '@/lib/prisma';
 import { Note } from '@/types/note';
-import { CreateNoteDTO } from '@/schemas/note';
+import { CreateNoteDTO, UpdateNoteDTO } from '@/schemas/note';
 
 export const getAllNotes = async (vaultId: string): Promise<Note[]> => {
   const notes = await prisma.note.findMany({
@@ -109,4 +109,15 @@ export const restoreNoteFromTrash = async (id: string): Promise<void> => {
       }
     });
   });
+};
+
+export const updateNote = async (data: UpdateNoteDTO): Promise<Note> => {
+  const note = await prisma.note.update({
+    where: { id: data.id },
+    data: {
+      title: data.title,
+      content: data.content,
+    },
+  });
+  return note as Note;
 }; 

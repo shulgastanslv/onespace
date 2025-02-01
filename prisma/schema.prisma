@@ -7,12 +7,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            String         @id @default(cuid())
+  email         String        @unique
+  password      String
+  name          String?
+  role          Role          @default(USER)
+  vaults        Vault[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
 model Vault {
   id          String   @id @default(uuid())
   name        String
   icon        String
   count       Int
   color       String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
   notes       Note[]
   links       Link[]
   isInTrash   Boolean  @default(false)
@@ -45,50 +63,7 @@ model Link {
   isInTrash   Boolean  @default(false)
 }
 
-model User {
-  id            String         @id @default(uuid())
-  email         String        @unique
-  name          String?
-  role          Role          @default(USER)
-  subscription  Subscription?
-  notifications Notification[]
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-}
 
-enum Role {
-  USER
-  ADMIN
-}
 
-model Subscription {
-  id        String   @id @default(uuid())
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id])
-  plan      Plan     @default(FREE)
-  startDate DateTime @default(now())
-  endDate   DateTime?
-  status    SubStatus @default(ACTIVE)
-}
 
-enum Plan {
-  FREE
-  PRO
-  PREMIUM
-}
 
-enum SubStatus {
-  ACTIVE
-  CANCELLED
-  EXPIRED
-}
-
-model Notification {
-  id        String   @id @default(uuid())
-  title     String
-  message   String
-  isRead    Boolean  @default(false)
-  userId    String?
-  user      User?    @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-} 

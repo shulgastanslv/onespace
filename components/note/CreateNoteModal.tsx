@@ -105,7 +105,6 @@ export function CreateNoteModal({ isOpen, onClose, onSuccess, vaultId }: CreateN
           <ModalHeader className="flex flex-col gap-1">
             <h2 className="text-xl font-bold">Create new note</h2>
           </ModalHeader>
-          
           <ModalBody className="gap-4">
             <Input
               label="Title"

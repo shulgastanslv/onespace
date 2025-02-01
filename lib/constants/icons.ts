@@ -21,6 +21,9 @@ import {
   Music,
   LucideIcon,
   TrashIcon,
+  Lock,
+  MessageCircle,
+  Settings,
 } from 'lucide-react';
 
 export interface IconData {
@@ -50,6 +53,10 @@ export const SidebarIcons: IconData[] = [
   { id: 'key', icon: Key },
   { id: 'music', icon: Music },
   { id: 'trash', icon: TrashIcon },
+  { id: 'lock', icon: Lock },
+  { id: 'feedback', icon: MessageCircle },
+  { id: 'settings', icon: Settings },
+  { id: 'advanced', icon: Settings },
 ];
 
 export const getIconById = (id: string): LucideIcon | undefined => {

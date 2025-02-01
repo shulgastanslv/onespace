@@ -1,53 +1,94 @@
-'use client'
+'use client';
 
-import { Button, Input, Card, CardBody, CardHeader, Divider, Link } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { ThemeSwitch } from "../theme/ThemeSwitch";
-import { Eye, EyeClosed } from "lucide-react";
-
+import {
+  Button,
+  Input,
+  Card,
+  CardBody,
+  CardHeader,
+  Divider,
+  Link,
+} from '@nextui-org/react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { AlertCircle, Eye, EyeClosed } from 'lucide-react';
+import { signIn } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
+import { findByEmail } from '@/services/user';
 export default function AuthForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [error, setError] = useState('');
   const router = useRouter();
+  const searchUrl = useSearchParams();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    router.push('/');
+    setError('');
+    setIsLoading(true);
+
+    try {
+      const user = await findByEmail(email);
+
+      if (!user) {
+        setError('User with this email not found');
+        return;
+      }
+
+      const result = await signIn('credentials', {
+        ...user,
+        redirect: false,
+        callbackUrl: searchUrl.get('callbackUrl') || '/',
+      });
+
+      if (result?.error) {
+        setError('Invalid email or password');
+        return;
+      }
+
+      if (result?.ok) {
+        router.push(result.url || '/');
+      }
+    } catch (err) {
+      setError('An error occurred during login. Please try again later.');
+      console.error('Login error:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
-  const handleLogin = async () => {
-    router.push('/');
-  };
-
   return (
-    <Card className="max-w-sm w-full bg-background/50 backdrop-blur-md border border-gray-200/25 rounded-lg shadow-md">
-      <CardHeader className="flex justify-between items-center gap-2">
-        <h2 className="text-lg font-bold">Login to your account</h2>
-        <ThemeSwitch />
+    <Card className="max-w-md w-full  bg-background dark:bg-background/40 backdrop-blur-xl border border-gray-200 rounded-xl shadow-2xl">
+      <CardHeader className="flex flex-col items-center gap-3 pt-8 pb-4">
+        <h2 className="text-2xl font-bold">Welcome back!</h2>
+        <p className="text-sm text-default-500 dark:text-default-400">
+          Sign in to continue
+        </p>
       </CardHeader>
-      <CardBody>
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <CardBody className="px-8 pb-8">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <Input
             label="Email"
             type="email"
-            placeholder="Email"
+            placeholder="example@mail.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
             variant="bordered"
             radius="lg"
             classNames={{
-              input: "text-sm",
-              inputWrapper: "bg-background/50",
+              label: 'text-default-600 dark:text-default-400',
+              input: 'text-sm',
             }}
           />
           <Input
             label="Password"
-            type={isVisible ? "text" : "password"}
+            type={isVisible ? 'text' : 'password'}
+            placeholder="Enter password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -57,10 +98,9 @@ export default function AuthForm() {
               <Button
                 className="focus:outline-none border-none"
                 type="button"
-                variant="ghost"
-                color="default"
+                variant="light"
+                isIconOnly
                 size="sm"
-                radius="full"
                 onClick={toggleVisibility}
               >
                 {isVisible ? (
@@ -71,44 +111,42 @@ export default function AuthForm() {
               </Button>
             }
             classNames={{
-              input: "text-sm",
-              inputWrapper: "bg-background/50",
+              label: 'text-default-600 dark:text-default-400',
+              input: 'text-sm',
             }}
           />
-
-       
-
-          <Button 
-            type="submit" 
-            color="primary" 
+          {error && (
+            <div className="p-3 text-sm text-center bg-danger-50 rounded-lg flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-danger" />
+              {error}
+            </div>
+          )}
+          <Button
+            type="submit"
+            color="primary"
+            variant="shadow"
             fullWidth
+            className="font-semibold shadow-lg hover:shadow-primary/25 transition-shadow"
+            size="lg"
+            radius="lg"
+            isLoading={isLoading}
           >
-            Login
+            Sign in
           </Button>
-          
-          <p className="text-center text-sm text-default-600">
-            Don&apos;t have an account?{" "}
-            <Link href="/auth/register" className="text-primary text-sm">
-              Register
+
+          <Divider className="my-4" />
+
+          <p className="text-center text-sm text-default-500">
+            Don&apos;t have an account?{' '}
+            <Link
+              href="/auth/register"
+              className="text-primary font-medium hover:underline"
+            >
+              Sign up
             </Link>
           </p>
         </form>
-        <Divider className="my-4" />
-        <Button 
-          onClick={handleLogin}
-          color="default"
-          fullWidth
-          startContent={<GithubIcon />}
-        >
-          Login with GitHub
-        </Button>
       </CardBody>
     </Card>
   );
 }
-
-const GithubIcon = () => (
-  <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-  </svg>
-); 

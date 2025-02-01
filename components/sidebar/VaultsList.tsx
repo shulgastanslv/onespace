@@ -36,7 +36,7 @@ export function VaultsList({
         onClose={() => setIsOpenCreateVaultModal(false)}
         onSuccess={handleCreateVaultSuccess}
       />
-      <div className="flex items-center justify-between p-2">
+      <div className="flex items-center justify-between p-2 mb-1">
         {isExpanded && (
           <h2 className="text-sm font-medium text-gray-500">Vaults</h2>
         )}
