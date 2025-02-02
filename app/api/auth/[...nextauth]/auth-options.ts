@@ -1,4 +1,3 @@
-import { randomUUID } from "crypto";
 import { User, type AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -8,15 +7,15 @@ export const authOptions: AuthOptions = {
       id: "credentials",
       name: "credentials",
       credentials: {
+        id: { type: "text" },
         email: { type: "text" },
         name: { type: "text" },
         password: { type: "password" },
       },
       authorize: async (credentials) => {
-        if (!credentials?.email || !credentials?.password || !credentials?.name) return null;
-        
+        if (!credentials?.email || !credentials?.password || !credentials?.name || !credentials?.id) return null;
         const user: User = { 
-          id: randomUUID(), 
+          id: credentials.id, 
           email: credentials.email,
           name: credentials.name,
         };

@@ -9,13 +9,15 @@ import { SidebarItems } from './SidebarItems';
 import { VaultsList } from './VaultsList';
 import { Vault } from '@/types/vault';
 import { getAllVaults } from '@/services/vault';
+import { useSession } from 'next-auth/react';
 
 export default function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(true);
   const [vaults, setVaults] = useState<Vault[]>([]);
-  
+  const session = useSession();
+
   const refreshVaults = async () => {
-    const vaults = await getAllVaults();
+    const vaults = await getAllVaults(session.data?.user?.id!);
     setVaults(vaults);
   };
 
@@ -35,12 +37,12 @@ export default function Sidebar() {
       count: trashCount,
     },
     {
-      id: "feedback",
+      id: 'feedback',
       type: SidebarItemType.FEEDBACK,
-      name: "Feedback",
-      icon: "feedback",
-      color: "primary",
-    }
+      name: 'Feedback',
+      icon: 'feedback',
+      color: 'primary',
+    },
   ];
 
   return (
@@ -66,18 +68,20 @@ export default function Sidebar() {
           )}
         </Button>
         <div className="flex flex-col p-5">
-          <VaultsList
-            isExpanded={isExpanded}
-            vaults={vaults}
-            onVaultsChange={refreshVaults}
-          />
-          <Divider className="my-5 dark:border-gray-50/10" />
-          <SidebarItems
-            isExpanded={isExpanded}
-            items={items}
-            onVaultsChange={refreshVaults}
-          />
-          <Divider className="my-5 dark:border-gray-50/10" />
+          <div className="flex flex-col p-5">
+            <VaultsList
+              isExpanded={isExpanded}
+              vaults={vaults}
+              onVaultsChange={refreshVaults}
+            />
+            <Divider className="my-5 dark:border-gray-50/10" />
+            <SidebarItems
+              isExpanded={isExpanded}
+              items={items}
+              onVaultsChange={refreshVaults}
+            />
+            <Divider className="my-5 dark:border-gray-50/10" />
+          </div>
         </div>
       </motion.div>
     </>

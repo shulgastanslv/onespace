@@ -6,25 +6,34 @@ import { getAllVaults, restoreFromTrash } from '@/services/vault';
 import { Button, Card, CardBody } from '@nextui-org/react';
 import { getIconById } from '@/lib/constants/icons';
 import { RefreshCwIcon } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 
-export default function TrashPage() {
+export default function Page() {
   const [trashedVaults, setTrashedVaults] = useState<Vault[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const session = useSession();
+
   const loadTrashedVaults = async () => {
     setIsLoading(true);
-    const vaults = await getAllVaults();
+    const vaults = await getAllVaults(session.data?.user?.id!);
+    console.log(vaults)
     setTrashedVaults(vaults.filter(v => v.isInTrash));
     setIsLoading(false);
   };
 
   useEffect(() => {
-    loadTrashedVaults();
+      loadTrashedVaults();
   }, []);
 
   const handleRestore = async (vaultId: string) => {
     setIsLoading(true);
-    await restoreFromTrash(vaultId);
+    if (!session.data?.user) {
+      console.error('User session not found');
+      setIsLoading(false);
+      return;
+    }
+    await restoreFromTrash(session.data.user.id!, vaultId);
     await loadTrashedVaults();
     setIsLoading(false);
   };

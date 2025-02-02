@@ -2,6 +2,7 @@ import { getAllVaults } from '@/services/vault';
 import { Overview } from './_components/overview';
 import { getAllNotes } from '@/services/note';
 import { Vault } from '@/types/vault';
+import { getSession } from 'next-auth/react';
 
 async function getNotes(vaults: Vault[]) {
   let notes = 0;
@@ -22,16 +23,16 @@ async function getNotesToday(vaults: Vault[]) {
 }
 
 export default async function Home() {
+  const session = await getSession();
+  const vaults = await getAllVaults(session?.user?.id!);
 
-  const vaults = (await getAllVaults()).length;
-
-  const notes = await getNotes(await getAllVaults());
+  const notes = await getNotes(vaults);
   const hoursActive = 12;
-  const storageUsed = 85;
+  const storageUsed = 0;
   const maxStorage = 2000;
 
-  const vaultToday = (await getAllVaults()).filter((vault) => vault.createdAt > new Date(Date.now() - 24 * 60 * 60 * 1000)).length;
-  const notesToday = await getNotesToday(await getAllVaults());
+  const vaultToday = vaults.filter((vault) => vault.createdAt > new Date(Date.now() - 24 * 60 * 60 * 1000)).length;
+  const notesToday = await getNotesToday(vaults);
   const hoursToday = 12;
 
   return (
@@ -39,7 +40,7 @@ export default async function Home() {
       <div className="relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Overview
-            vaults={vaults}
+            vaults={vaults.length}
             notes={notes}
             hoursActive={hoursActive}
             storageUsed={storageUsed}

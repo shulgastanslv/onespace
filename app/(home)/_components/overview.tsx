@@ -19,10 +19,10 @@ export function Overview({ vaults, notes, hoursActive, storageUsed, maxStorage, 
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
-    className="col-span-full p-6 rounded-xl bg-white/5 dark:bg-background/70 backdrop-blur-md border border-gray-200 dark:border-gray-200/10 transition-colors hover:border-gray-300 dark:hover:border-gray-500"
+    className="col-span-full p-6 rounded-xl bg-white/5 dark:bg-background backdrop-blur-md border border-gray-200 transition-colors hover:border-gray-200 dark:hover:border-gray-300"
   >
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-      <div className="p-4 rounded-lg bg-gray-100/80 dark:bg-white/5 hover:bg-gray-200/80 dark:hover:bg-white/10 transition-colors">
+      <div className="p-4 rounded-lg bg-background border border-gray-200 dark:border-gray-200/10 transition-colors">
         <p className="text-sm text-gray-600 dark:text-gray-400">
           Total Vaults
         </p>
@@ -33,7 +33,7 @@ export function Overview({ vaults, notes, hoursActive, storageUsed, maxStorage, 
           ↑ {vaultToday} new
         </p>
       </div>
-      <div className="p-4 rounded-lg bg-gray-100/80 dark:bg-white/5 hover:bg-gray-200/80 dark:hover:bg-white/10 transition-colors">
+      <div className="p-4 rounded-lg bg-background border border-gray-200 dark:border-gray-200/10 transition-colors">
         <p className="text-sm text-gray-600 dark:text-gray-400">
           Total Notes
         </p>
@@ -44,7 +44,7 @@ export function Overview({ vaults, notes, hoursActive, storageUsed, maxStorage, 
           ↑ {notesToday} today
         </p>
       </div>
-      <div className="p-4 rounded-lg bg-gray-100/80 dark:bg-white/5 hover:bg-gray-200/80 dark:hover:bg-white/10 transition-colors">
+      <div className="p-4 rounded-lg bg-background border border-gray-200 dark:border-gray-200/10 transition-colors">
         <p className="text-sm text-gray-600 dark:text-gray-400">
           Hours Active
         </p>
@@ -55,7 +55,7 @@ export function Overview({ vaults, notes, hoursActive, storageUsed, maxStorage, 
           ↑ {hoursToday} today
         </p>
       </div>
-      <div className="p-4 rounded-lg bg-gray-100/80 dark:bg-white/5 hover:bg-gray-200/80 dark:hover:bg-white/10 transition-colors">
+      <div className="p-4 rounded-lg bg-background border border-gray-200 dark:border-gray-200/10 transition-colors">
         <p className="text-sm text-gray-600 dark:text-gray-400">
           Storage Used
         </p>

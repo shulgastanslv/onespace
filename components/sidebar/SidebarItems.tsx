@@ -14,25 +14,30 @@ import { emptyTrash, moveToTrash } from '@/services/vault';
 import { deleteVault } from '@/services/vault';
 import { getIconById } from '@/lib/constants/icons';
 import { useRouter } from 'next/navigation';
-
+import { useSession } from 'next-auth/react';
 const SidebarItemDropdown: React.FC<{
   type: SidebarItemType;
   onVaultsChange: () => void;
   itemId: string;
 }> = ({ type, onVaultsChange, itemId }) => {
+  const session = useSession();
 
   const handleAction = async (action: string) => {
+    if (!session.data?.user?.id) {
+      console.error('User session not found');
+      return;
+    }
     switch (action) {
       case 'delete':
-        await deleteVault(itemId);
+        await deleteVault(session.data?.user?.id, itemId);
         onVaultsChange();
         break;
       case 'trash':
-        await moveToTrash(itemId);
+        await moveToTrash(session.data?.user?.id, itemId);
         onVaultsChange();
         break;
       case 'empty':
-        await emptyTrash();
+        await emptyTrash(session.data?.user?.id);
         onVaultsChange();
         break;
     }

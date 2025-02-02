@@ -27,8 +27,8 @@ model Vault {
   id          String   @id @default(uuid())
   name        String
   icon        String
-  count       Int
-  color       String
+  count       Int      @default(0)
+  color       String   @default("#000000")
   userId      String
   user        User     @relation(fields: [userId], references: [id])
   notes       Note[]

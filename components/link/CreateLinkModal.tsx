@@ -71,15 +71,23 @@ export function CreateLinkModal({ isOpen, onClose, onSuccess, vaultId }: CreateL
         });
         setErrors(formattedErrors);
         toast.error('Please check the form for errors');
+        setIsLoading(false);
         return;
       }
       await createLink(result.data);
       toast.success('Link created successfully!');
       onSuccess();
       onClose();
+      setFormData({
+        title: '',
+        description: '',
+        url: '',
+        tags: [],
+        category: '',
+        vaultId: vaultId,
+      });
     } catch {
       toast.error('Failed to create link');
-    } finally {
       setIsLoading(false);
     }
   };

@@ -51,20 +51,26 @@ export function VaultsList({
           </Button>
         )}
       </div>
-      <SidebarItems
-        onVaultsChange={onVaultsChange}
-        isExpanded={isExpanded}
-        items={vaults
-          .filter((v) => !v.isInTrash)
-          .map((v) => ({
-            id: v.id,
-            type: SidebarItemType.VAULT,
-            name: v.name,
-            count: v.count,
-            icon: v.icon,
-            color: v.color,
-          }))}
-      />
+      {vaults.length > 0 ? (
+        <SidebarItems
+          onVaultsChange={onVaultsChange}
+          isExpanded={isExpanded}
+          items={vaults
+            .filter((v) => !v.isInTrash)
+            .map((v) => ({
+              id: v.id,
+              type: SidebarItemType.VAULT,
+              name: v.name,
+              count: v.count,
+              icon: v.icon,
+              color: v.color,
+            }))}  
+        />
+      ) : (
+        <div className="flex flex-col p-2">
+          <p className="text-sm hover:scale-105 duration-300 hover:text-gray-500 cursor-pointer text-start">No vaults found</p>
+        </div>
+      )}
     </>
   );
 }

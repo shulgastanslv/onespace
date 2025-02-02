@@ -14,17 +14,21 @@ import { getAllLinks } from '@/services/link';
 import { CreateLinkModal } from '../link/CreateLinkModal';
 import { LinksList } from '../link/LinksList';
 import { getVault } from '@/services/vault';
+import { useSession } from 'next-auth/react';
 
 interface VaultViewProps {
   vaultId: string;
 }
 
 export function VaultView({ vaultId }: VaultViewProps) {
+  
   const [notes, setNotes] = useState<Note[]>([]);
   const [vault, setVault] = useState<Vault | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [links, setLinks] = useState<Link[]>([]);
   const [isCreateLinkModalOpen, setIsCreateLinkModalOpen] = useState(false);
+
+  const session = useSession();
 
   const fetchNotes = async () => {
     const fetchedNotes = await getAllNotes(vaultId);
@@ -32,7 +36,10 @@ export function VaultView({ vaultId }: VaultViewProps) {
   };
 
   const fetchVault = async () => {
-    const vault = await getVault(vaultId);
+    if (!session.data?.user?.id) {
+      return;
+    }
+    const vault = await getVault(session.data.user.id, vaultId);
     setVault(vault as Vault);
   };
 
@@ -42,9 +49,11 @@ export function VaultView({ vaultId }: VaultViewProps) {
   };
 
   useEffect(() => {
-    fetchVault();
-    fetchNotes();
-    fetchLinks();
+    if (session.data?.user?.id) {
+      fetchVault();
+      fetchNotes();
+      fetchLinks();
+    }
   }, [vaultId]);
 
   const handleCreateSuccess = () => {

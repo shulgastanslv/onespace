@@ -61,7 +61,7 @@ export default function Page() {
   };
 
   return (
-    <div className="container mx-auto items-center justify-center h-screen flex p-4 max-w-xl">
+    <div className="container mx-auto items-center justify-center h-screen flex p-4 max-w-3xl">
       <Card className="p-4 space-y-6 bg-background border-gray-200 border-1 rounded-lg">
         <div className="space-y-1">
           <h1 className="text-xl font-bold flex items-center gap-2">
@@ -78,7 +78,7 @@ export default function Page() {
             onValueChange={setFeedbackType}
             isRequired
             classNames={{
-              label: "after:content-['*'] after:text-danger after:ml-0.5",
+              label: "after:content-['*'] after:text-danger after:ml-0.5 mb-2",
             }}
             label="Type of feedback"
           >
