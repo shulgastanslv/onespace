@@ -27,6 +27,11 @@ export function Navbar() {
     await signOut();
   };
 
+
+  const avatar = session.data?.user?.name 
+    ? session.data.user.name[0].toUpperCase() + session.data.user.name[1]?.toUpperCase() 
+    : "??";
+
   return (
     <nav className="w-full h-16 border-b bg-background/70 backdrop-blur-md fixed top-0 right-0 z-50">
       <div className="flex items-center justify-between h-full px-5 md:px-5">
@@ -62,11 +67,9 @@ export function Navbar() {
           >
             <DropdownTrigger>
               <Avatar
-                isBordered
                 as="button"
-                className="focus:outline-none"
-                color="default"
-                name={session.data?.user?.name}
+                className="focus:outline-none font-bold hover:scale-105 transition-all duration-300"
+                name={avatar}
                 size="sm"
               />
             </DropdownTrigger>
