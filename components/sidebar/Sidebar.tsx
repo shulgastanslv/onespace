@@ -8,24 +8,39 @@ import { SidebarItem, SidebarItemType } from '@/types/sidebar';
 import { SidebarItems } from './SidebarItems';
 import { VaultsList } from './VaultsList';
 import { Vault } from '@/types/vault';
-import { getAllVaults } from '@/services/vault';
+import { getAllVaults, getTrashVaults } from '@/services/vault';
 import { useSession } from 'next-auth/react';
 
 export default function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(true);
   const [vaults, setVaults] = useState<Vault[]>([]);
+  const [trashCount, setTrashCount] = useState<number>(0);
   const session = useSession();
 
   const refreshVaults = async () => {
-    const vaults = await getAllVaults(session.data?.user?.id!);
+    const vaults = await getAllVaults(session.data?.user?.id);
+    
+    if(!vaults) {
+      setVaults([]);
+      return;
+    };
     setVaults(vaults);
   };
 
+  const refreshTrashedVaults = async () => {
+    const trashedVaults = await getTrashVaults(session.data?.user?.id);
+    if(!trashedVaults) {
+      setTrashCount(0);
+      return;
+    };
+    setTrashCount(trashedVaults.length);
+  };
+  
   useEffect(() => {
     refreshVaults();
-  }, []);
+    refreshTrashedVaults();
+  }, [session.data?.user?.id]);
 
-  const trashCount = vaults.filter((v) => v.isInTrash).length;
 
   const items: SidebarItem[] = [
     {

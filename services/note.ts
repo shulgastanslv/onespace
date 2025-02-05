@@ -10,9 +10,6 @@ export const getAllNotes = async (vaultId: string): Promise<Note[]> => {
       vaultId,
       isInTrash: false 
     },
-    orderBy: {
-      createdAt: 'desc',
-    },
   });
   return notes as Note[];
 };
@@ -24,7 +21,6 @@ export const createNote = async (data: CreateNoteDTO): Promise<Note> => {
         ...data,
       },
     });
-
     await tx.vault.update({
       where: { id: data.vaultId },
       data: {

@@ -8,10 +8,10 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(cuid())
-  email         String        @unique
-  password      String
-  name          String?
+  id            String         @id @default(uuid())
+  email         String        @unique @db.VarChar(255)
+  password      String        @db.Text
+  name          String?       @db.VarChar(100)
   role          Role          @default(USER)
   vaults        Vault[]
   createdAt     DateTime      @default(now())
@@ -25,8 +25,8 @@ enum Role {
 
 model Vault {
   id          String   @id @default(uuid())
-  name        String
-  icon        String
+  name        String   @db.VarChar(100)
+  icon        String   @db.VarChar(50)
   count       Int      @default(0)
   color       String   @default("#000000")
   userId      String
@@ -36,31 +36,35 @@ model Vault {
   isInTrash   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  @@index([userId])
 }
 
 model Note {
   id          String   @id @default(uuid())
-  title       String
+  title       String   @db.VarChar(200)
   content     String   @db.Text
   vaultId     String
   vault       Vault    @relation(fields: [vaultId], references: [id], onDelete: Cascade)
   isInTrash   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  @@index([vaultId])
 }
 
 model Link {
-  id          String   @id @default(cuid())
-  title       String
-  description String?
-  url         String
+  id          String   @id @default(uuid())
+  title       String   @db.VarChar(200)
+  description String?  @db.Text
+  url         String   @db.Text
   tags        String[]
   category    String?
   vaultId     String
-  vault       Vault    @relation(fields: [vaultId], references: [id])
+  vault       Vault    @relation(fields: [vaultId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   isInTrash   Boolean  @default(false)
+  @@index([vaultId])
+  @@index([url])
 }
 
 

@@ -32,7 +32,7 @@ export function CreateVaultModal({
   const { theme } = useTheme();
   const [formData, setFormData] = useState<CreateVaultDTO>({
     name: '',
-    color: theme === 'dark' ? '#ffffff' : '#000000',
+    color: theme === 'dark' ? '#fff' : '#000',
     icon: SidebarIcons[0].id,
   });
 
@@ -65,6 +65,11 @@ export function CreateVaultModal({
       onClose();
     } catch (error) {
       console.error('Error creating vault:', error);
+      setFormData({
+        name: '',
+        color: theme === 'dark' ? '#fff' : '#000',
+        icon: SidebarIcons[0].id,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -72,7 +77,7 @@ export function CreateVaultModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} backdrop="blur" placement="center">
-      <ModalContent className="max-w-2xl bg-background backdrop-blur-sm rounded-lg border border-default-200">
+      <ModalContent className="max-w-xl bg-background backdrop-blur-sm rounded-lg border border-default-200">
         <form onSubmit={handleSubmit}>
           <ModalHeader className="flex flex-col gap-1">
             <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
@@ -154,7 +159,7 @@ export function CreateVaultModal({
                   <label className="text-sm font-medium mb-3 block">
                     Preset Colors
                   </label>
-                  <div className="grid grid-cols-5 gap-3">
+                  <div className="grid grid-cols-5 gap-5">
                     {[
                       '#FF5733',
                       '#33FF57',

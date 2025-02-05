@@ -4,32 +4,30 @@ import { Vault } from '@/types/vault';
 import { prisma } from '@/lib/prisma';
 import { CreateVaultDTO } from '@/schemas/vault';
 
-export const getAllVaults = async (userId: string): Promise<Vault[]> => {
+export const getAllVaults = async (userId: string | undefined): Promise<Vault[] | null> => {
+  if(!userId) return null;
   const vaults = await prisma.vault.findMany({
     where: {
       userId,
-    },
-    orderBy: {
-      createdAt: 'desc',
     },
   });
   return vaults as Vault[];
 };
 
-export const getTrashVaults = async (userId: string): Promise<Vault[]> => {
+export const getTrashVaults = async (userId: string | undefined): Promise<Vault[] | null> => {
+  if(!userId) return null;
   const vaults = await prisma.vault.findMany({
     where: {
       userId,
       isInTrash: true,
     },
-    orderBy: {
-      updatedAt: 'desc',
-    },
   });
   return vaults as Vault[];
 };
 
-export const createVault = async (userId: string, data: CreateVaultDTO): Promise<Vault> => {
+export const createVault = async (userId: string | undefined, data: CreateVaultDTO): Promise<Vault | null> => {
+  if (!userId) return null;
+
   const vault = await prisma.vault.create({
     data: {
       ...data,
@@ -42,10 +40,10 @@ export const createVault = async (userId: string, data: CreateVaultDTO): Promise
   return vault as Vault;
 };
 
-export const getVault = async (userId: string, id: string): Promise<Vault | null> => {
-  if (!id) return null;
+export const getVault = async (userId: string | undefined, id: string): Promise<Vault | null> => {
+  if (!userId) return null;
   
-  const vault = await prisma.vault.findFirst({
+  const vault = await prisma.vault.findUnique({
     where: { 
       id,
       userId,
@@ -55,8 +53,9 @@ export const getVault = async (userId: string, id: string): Promise<Vault | null
   return vault as Vault;
 };
 
-export const moveToTrash = async (userId: string, id: string): Promise<void> => {
-  await prisma.vault.updateMany({
+export const moveToTrash = async (userId: string | undefined, id: string): Promise<void> => {
+  if (!userId) return;
+  await prisma.vault.update({
     where: { 
       id,
       userId,
@@ -68,8 +67,9 @@ export const moveToTrash = async (userId: string, id: string): Promise<void> => 
   });
 };
 
-export const restoreFromTrash = async (userId: string, id: string): Promise<void> => {
-  await prisma.vault.updateMany({
+export const restoreFromTrash = async (userId: string | undefined, id: string): Promise<boolean> => {
+  if(!userId) return false;
+  await prisma.vault.update({
     where: { 
       id,
       userId,
@@ -79,9 +79,11 @@ export const restoreFromTrash = async (userId: string, id: string): Promise<void
       updatedAt: new Date(),
     },
   });
+  return true;
 };
 
-export const emptyTrash = async (userId: string): Promise<void> => {
+export const emptyTrash = async (userId: string | undefined): Promise<void> => {
+  if (!userId) return;
   await prisma.vault.deleteMany({
     where: { 
       userId,
@@ -90,8 +92,9 @@ export const emptyTrash = async (userId: string): Promise<void> => {
   });
 };
 
-export const deleteVault = async (userId: string, id: string): Promise<void> => {
-  await prisma.vault.deleteMany({
+export const deleteVault = async (userId: string | undefined, id: string): Promise<void> => {
+  if (!userId) return;
+  await prisma.vault.delete({
     where: { 
       id,
       userId,

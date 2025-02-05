@@ -1,8 +1,8 @@
-"use server";
+'use server';
 import { prisma } from '@/lib/prisma';
-import { CreateUserDto, UpdateUserDto } from '../types/user';
+import { CreateUserDto, UpdateUserDto, User } from '../types/user';
 
-export async function findById(id: string) {
+export async function findById(id: string): Promise<User | null> {
   const user = await prisma.user.findUnique({
     where: { id },
     include: {
@@ -14,32 +14,55 @@ export async function findById(id: string) {
     return null;
   }
 
-  return user;
+  return user as User;
 }
 
-export async function findByEmail(email: string) {
-  return prisma.user.findUnique({
+export async function findByEmail(email: string): Promise<User | null> {
+  const user = await prisma.user.findUnique({
     where: { email },
   });
+
+  if (!user) {
+    return null;
+  }
+
+  return user as User;
 }
 
-export async function createUser(data: CreateUserDto) {
-  return prisma.user.create({
+export async function createUser(data: CreateUserDto): Promise<User> {
+  const user = await prisma.user.create({
     data: {
       ...data,
     },
   });
+
+  return user as User;
 }
 
-export async function updateUser(id: string, data: UpdateUserDto) {
-  return prisma.user.update({
+export async function updateUser(
+  id: string | undefined,
+  data: UpdateUserDto,
+): Promise<User | null> {
+  if (!id) {
+    return null;
+  }
+
+  const user = await prisma.user.update({
     where: { id },
     data,
   });
+
+  return user as User;
 }
 
-export async function deleteUser(id: string) {
-  return prisma.user.delete({
+export async function deleteUser(id: string | undefined): Promise<User | null> {
+  if (!id) {
+    return null;
+  }
+
+  const user = await prisma.user.delete({
     where: { id },
   });
+
+  return user as User;
 }

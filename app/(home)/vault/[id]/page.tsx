@@ -1,107 +1,162 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@nextui-org/react';
 import { LinkIcon, StickyNote } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { toast } from 'sonner';
+
 import { Note } from '@/types/note';
 import { Vault } from '@/types/vault';
-import { getAllNotes } from '@/services/note';
-import { NotesList } from '@/components/note/NotesList';
-import { getIconById } from '@/lib/constants/icons';
 import { Link } from '@/types/link';
+import { getAllNotes } from '@/services/note';
 import { getAllLinks } from '@/services/link';
 import { getVault } from '@/services/vault';
-import { useSession } from 'next-auth/react';
+import { getIconById } from '@/lib/constants/icons';
+import { NotesList } from '@/components/note/NotesList';
 import { CreateLinkModal } from '@/components/link/CreateLinkModal';
 import { CreateNoteModal } from '@/components/note/CreateNoteModal';
 import { LinksList } from '@/components/link/LinksList';
 import React from 'react';
 
 interface VaultPageProps {
-  params: Promise<{
-    id: string;
-  }>;
+  params: Promise<{ id: string }>;
 }
 
-export default function Page(props: VaultPageProps) {
+export default function VaultPage(props: VaultPageProps) {
+  // States
+  const [state, setState] = useState({
+    notes: [] as Note[],
+    links: [] as Link[],
+    vault: null as Vault | null,
+    isLoading: true,
+    isCreateModalOpen: false,
+    isCreateLinkModalOpen: false,
+  });
+
+  // Hooks
   const params = React.use(props.params);
   const vaultId = params.id;
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [vault, setVault] = useState<Vault | null>(null);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [links, setLinks] = useState<Link[]>([]);
-  const [isCreateLinkModalOpen, setIsCreateLinkModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: sessionData, status } = useSession();
+  const userId = sessionData?.user?.id;
 
-  const session = useSession();
+  // Fetch data handler
+  const fetchData = useCallback(async () => {
+    if (!userId) {
+      return;
+    }
 
-  const fetchData = async () => {
-    setIsLoading(true);
+    setState(prev => ({ ...prev, isLoading: true }));
+
     try {
       const [vaultData, notesData, linksData] = await Promise.all([
-        getVault(session.data?.user?.id!, vaultId),
+        getVault(userId, vaultId),
         getAllNotes(vaultId),
-        getAllLinks(vaultId)
+        getAllLinks(vaultId),
       ]);
-      
-      setVault(vaultData as Vault);
-      setNotes(notesData);
-      setLinks(linksData as Link[]);
+
+      if (!vaultData) {
+        toast.error('Vault not found');
+        return;
+      }
+
+      setState(prev => ({
+        ...prev,
+        vault: vaultData as Vault,
+        notes: notesData,
+        links: linksData as Link[],
+      }));
+    } catch (error) {
+      toast.error('Failed to load vault data');
+      console.error('Error fetching vault data:', error);
     } finally {
-      setIsLoading(false);
+      setState(prev => ({ ...prev, isLoading: false }));
     }
-  };
+  }, [userId, vaultId]);
 
+  // Effects
   useEffect(() => {
-    if (session.data?.user?.id) {
-      fetchData();
-    }
-  }, [session.data?.user?.id, vaultId]);
-
-  const handleDataUpdate = () => {
     fetchData();
+  }, [fetchData]);
+
+  // Modal handlers
+  const handleModalToggle = (modalType: 'note' | 'link', isOpen: boolean) => {
+    setState(prev => ({
+      ...prev,
+      [modalType === 'note' ? 'isCreateModalOpen' : 'isCreateLinkModalOpen']: isOpen,
+    }));
   };
 
-  if (isLoading) {
-    return <div className="flex justify-center items-center h-screen mx-auto">
-      <div className="loading-spinner" />
-    </div>;
+  // Render helpers
+  const renderIcon = () => {
+    if (!state.vault?.icon) return null;
+    const Icon = getIconById(state.vault.icon);
+    return Icon ? (
+      <div className="p-2 bg-inherit rounded-lg">
+        <Icon size={24} style={{ color: state.vault.color || '#000000' }} />
+      </div>
+    ) : null;
+  };
+
+  const renderEmptyState = (type: 'note' | 'link') => (
+    <div className="text-center py-8">
+      {type === 'note' ? (
+        <StickyNote size={24} className="mx-auto mb-2 text-gray-400" />
+      ) : (
+        <LinkIcon size={24} className="mx-auto mb-2 text-gray-400" />
+      )}
+      <p className="text-gray-500">No {type}s yet</p>
+      <Button
+        color="primary"
+        variant="light"
+        size="sm"
+        className="mt-2"
+        onClick={() => handleModalToggle(type, true)}
+      >
+        {type === 'note' ? 'Create your first note' : 'Add your first link'}
+      </Button>
+    </div>
+  );
+
+  if (status === 'loading' || state.isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="relative">
+          <div className="w-12 h-12 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
+          <div className="mt-4 text-sm text-gray-500">Loading...</div>
+        </div>
+      </div>
+    );
   }
 
-  if (!vault) return null;
+  if (!state.vault) return null;
 
+  // Main render
   return (
     <div className="max-w-6xl mx-auto">
       <div className="p-6 mt-16">
+        {/* Modals */}
         <CreateNoteModal
-          isOpen={isCreateModalOpen}
-          onClose={() => setIsCreateModalOpen(false)}
-          onSuccess={handleDataUpdate}
+          isOpen={state.isCreateModalOpen}
+          onClose={() => handleModalToggle('note', false)}
+          onSuccess={fetchData}
           vaultId={vaultId}
         />
         <CreateLinkModal
-          isOpen={isCreateLinkModalOpen}
-          onClose={() => setIsCreateLinkModalOpen(false)}
-          onSuccess={handleDataUpdate}
+          isOpen={state.isCreateLinkModalOpen}
+          onClose={() => handleModalToggle('link', false)}
+          onSuccess={fetchData}
           vaultId={vaultId}
         />
+
+        {/* Header */}
         <div className="bg-transparent border-b border-default-200 rounded-sm p-6 mb-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              {(() => {
-                const Icon = getIconById(vault.icon!);
-                return Icon ? (
-                  <div className="p-2 bg-inherit rounded-lg">
-                    <Icon
-                      size={24}
-                      style={{ color: vault.color || '#000000' }}
-                    />
-                  </div>
-                ) : null;
-              })()}
+              {renderIcon()}
               <div>
-                <h1 className="text-2xl font-bold">{vault.name}</h1>
+                <h1 className="text-2xl font-bold">{state.vault.name}</h1>
                 <p className="text-sm text-gray-500 mt-1">
-                  {notes.length} notes · {links.length} links
+                  {state.notes.length} notes · {state.links.length} links
                 </p>
               </div>
             </div>
@@ -110,7 +165,7 @@ export default function Page(props: VaultPageProps) {
                 color="primary"
                 variant="shadow"
                 size="sm"
-                onClick={() => setIsCreateModalOpen(true)}
+                onClick={() => handleModalToggle('note', true)}
                 startContent={<StickyNote size={16} />}
               >
                 Create note
@@ -119,7 +174,7 @@ export default function Page(props: VaultPageProps) {
                 color="primary"
                 variant="shadow"
                 size="sm"
-                onClick={() => setIsCreateLinkModalOpen(true)}
+                onClick={() => handleModalToggle('link', true)}
                 startContent={<LinkIcon size={16} />}
               >
                 Add link
@@ -127,45 +182,23 @@ export default function Page(props: VaultPageProps) {
             </div>
           </div>
         </div>
+
+        {/* Content */}
         <div className="grid grid-cols-1 gap-8">
           <div className="bg-transparent border-b border-default-200 p-6">
             <h2 className="text-lg font-semibold mb-6">Notes</h2>
-            {notes.length === 0 ? (
-              <div className="text-center py-8">
-                <StickyNote size={24} className="mx-auto mb-2 text-gray-400" />
-                <p className="text-gray-500">No notes yet</p>
-                <Button
-                  color="primary"
-                  variant="light"
-                  size="sm"
-                  className="mt-2"
-                  onClick={() => setIsCreateModalOpen(true)}
-                >
-                  Create your first note
-                </Button>
-              </div>
+            {state.notes.length === 0 ? (
+              renderEmptyState('note')
             ) : (
-              <NotesList notes={notes} onNotesChange={handleDataUpdate} />
+              <NotesList notes={state.notes} onNotesChange={fetchData} />
             )}
           </div>
           <div className="bg-transparent border-b border-default-200 p-6">
             <h2 className="text-lg font-semibold mb-6">Links</h2>
-            {links.length === 0 ? (
-              <div className="text-center py-8">
-                <LinkIcon size={24} className="mx-auto mb-2 text-gray-400" />
-                <p className="text-gray-500">No links yet</p>
-                <Button
-                  color="primary"
-                  variant="light"
-                  size="sm"
-                  className="mt-2"
-                  onClick={() => setIsCreateLinkModalOpen(true)}
-                >
-                  Add your first link
-                </Button>
-              </div>
+            {state.links.length === 0 ? (
+              renderEmptyState('link')
             ) : (
-              <LinksList links={links} onLinksChange={handleDataUpdate} />
+              <LinksList links={state.links} onLinksChange={fetchData} />
             )}
           </div>
         </div>
