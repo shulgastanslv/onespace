@@ -1,10 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Search, Moon, LogOut } from 'lucide-react';
+import { Moon, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { ThemeSwitch } from '@/components/theme/ThemeSwitch';
-import { Input } from '@nextui-org/react';
 import {
   Dropdown,
   DropdownTrigger,
@@ -16,6 +15,7 @@ import { Avatar } from '@nextui-org/avatar';
 import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 import { BUILD_INFO } from '@/version';
+import { SearchBar } from '@/components/search/SearchBar';
 
 export function Navbar() {
 
@@ -53,17 +53,7 @@ export function Navbar() {
           </motion.button>
         </Link>
         <div className="relative flex-1 max-w-md mx-auto">
-          <Input
-            type="text"
-            placeholder="Search..."
-            variant="bordered"
-            radius="lg"
-            classNames={{
-              input: 'text-sm',
-              inputWrapper: 'bg-background/50',
-            }}
-            endContent={<Search className="h-4 w-4 text-gray-400" />}
-          />
+          <SearchBar />
         </div>
         <div className="flex items-center gap-4">
           <Dropdown
