@@ -17,6 +17,7 @@ import { createVault } from '@/services/vault';
 import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { useSession } from 'next-auth/react';
+import { toast } from 'sonner';
 interface CreateVaultModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -56,15 +57,15 @@ export function CreateVaultModal({
       }
 
       if (!session.data?.user?.id) {
-        console.error('User session not found');
+        toast.error('User session not found');
         setIsLoading(false);
         return;
       }
       await createVault(session.data.user.id, result.data);
       onSuccess();
       onClose();
-    } catch (error) {
-      console.error('Error creating vault:', error);
+    } catch {
+      toast.error('Error creating vault');
       setFormData({
         name: '',
         color: theme === 'dark' ? '#fff' : '#000',

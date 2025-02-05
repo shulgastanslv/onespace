@@ -13,9 +13,9 @@ import {
   DropdownItem,
 } from '@nextui-org/dropdown';
 import { Avatar } from '@nextui-org/avatar';
-import { BUILD_INFO } from '@/app/version';
 import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
+import { BUILD_INFO } from '@/version';
 
 export function Navbar() {
 
